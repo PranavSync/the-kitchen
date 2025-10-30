@@ -24,11 +24,11 @@ Imagine having a smart cookbook that not only stores your favorite recipes but a
 ## 🖼️ See It In Action
 
 ### Homepage - Your Cooking Dashboard
-![Homepage](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/homepage.png)
+![Homepage](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/Homepage.png)
 *Welcome to your kitchen! Browse featured recipes and quick actions.*
 
 ### Recipe Collection
-![Recipes Page](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/recipes-page.png)
+![Recipes Page](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/browserecipe.png)
 *Discover new recipes from our community collection*
 
 ### Recipe Details
@@ -36,11 +36,11 @@ Imagine having a smart cookbook that not only stores your favorite recipes but a
 *View complete recipe instructions and ingredients*
 
 ### My Fridge - Smart Ingredient Tracking
-![My Fridge](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/my-fridge.png)
+![My Fridge](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/fridgepage.png)
 *See what ingredients you have and find matching recipes*
 
 ### Create Beautiful Recipes
-![Create Recipe](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/create-recipe.png)
+![Create Recipe](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/createpage.png)
 *Share your culinary creations with the community*
 ---
 
