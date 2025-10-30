@@ -1,0 +1,79 @@
+@model List<TheKitchen.Models.Entities.ShoppingList>
+@{
+    ViewData["Title"] = "My Shopping Lists";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-brown">My Shopping Lists</h1>
+            <p class="lead">Manage your grocery shopping lists</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            @if (Model.Any())
+            {
+                <div class="card">
+                    <div class="card-header bg-brown text-white">
+                        <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>Your Lists</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var list in Model)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">@list.Name</h5>
+                                            <p class="card-text text-muted mb-1">
+                                                Created: @list.CreatedDate.ToString("MMM dd, yyyy")
+                                            </p>
+                                            <p class="card-text text-muted">
+                                                Items: @list.Items.Count | 
+                                                Purchased: @list.Items.Count(i => i.IsPurchased)
+                                            </p>
+                                        </div>
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@list.Id" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-shopping-cart fa-4x text-muted mb-4"></i>
+                    <h3>No Shopping Lists Yet</h3>
+                    <p class="text-muted mb-4">Create your first shopping list from a recipe!</p>
+                    <a asp-controller="Recipe" asp-action="Index" class="btn btn-primary">
+                        <i class="fas fa-book me-1"></i>Browse Recipes
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Recipe" asp-action="Index" class="btn btn-outline-brown">
+                            <i class="fas fa-book me-1"></i>Browse Recipes
+                        </a>
+                        <a asp-action="Merge" class="btn btn-outline-brown">
+                            <i class="fas fa-object-group me-1"></i>Merge Lists
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,156 @@
+@model TheKitchen.Models.Entities.Recipe
+@{
+    ViewData["Title"] = "Edit Recipe";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Recipe</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Debug Info -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <h5>Form Errors:</h5>
+                            <ul>
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <!-- Current Image Preview -->
+                    @if (!string.IsNullOrEmpty(Model.ImagePath))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label>
+                            <div>
+                                <img src="@Model.ImagePath" alt="@Model.Title" class="img-thumbnail" style="max-height: 200px;">
+                                <small class="form-text text-muted">Current recipe image</small>
+                            </div>
+                        </div>
+                    }
+
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="mb-3">
+                            <label for="Title" class="form-label">Recipe Title *</label>
+                            <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" required>
+                            <span class="text-danger" data-valmsg-for="Title" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Description</label>
+                            <textarea class="form-control" id="Description" name="Description" rows="3">@Model.Description</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Instructions" class="form-label">Instructions *</label>
+                            <textarea class="form-control" id="Instructions" name="Instructions" rows="6" required>@Model.Instructions</textarea>
+                            <span class="text-danger" data-valmsg-for="Instructions" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="PrepTime" class="form-label">Prep Time (min) *</label>
+                                    <input type="number" class="form-control" id="PrepTime" name="PrepTime" value="@Model.PrepTime" min="0" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="CookTime" class="form-label">Cook Time (min) *</label>
+                                    <input type="number" class="form-control" id="CookTime" name="CookTime" value="@Model.CookTime" min="0" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="Servings" class="form-label">Servings *</label>
+                                    <input type="number" class="form-control" id="Servings" name="Servings" value="@Model.Servings" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Difficulty" class="form-label">Difficulty *</label>
+                            <select class="form-select" id="Difficulty" name="Difficulty" required>
+                                <option value="">Select difficulty...</option>
+                                <option value="Easy" selected="@(Model.Difficulty == "Easy")">Easy</option>
+                                <option value="Medium" selected="@(Model.Difficulty == "Medium")">Medium</option>
+                                <option value="Hard" selected="@(Model.Difficulty == "Hard")">Hard</option>
+                            </select>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="mb-3">
+                            <label for="ImageFile" class="form-label">Update Recipe Image</label>
+                            <input type="file" class="form-control" id="ImageFile" name="ImageFile" accept="image/jpeg,image/png,image/gif">
+                            <div class="form-text">Upload a new photo (JPEG, PNG, GIF). Leave empty to keep current image.</div>
+                        </div>
+
+                        <!-- Video URL -->
+                        <div class="mb-3">
+                            <label for="VideoUrl" class="form-label">Video URL (optional)</label>
+                            <input type="url" class="form-control" id="VideoUrl" name="VideoUrl" value="@Model.VideoUrl" placeholder="https://youtube.com/watch?v=...">
+                            <div class="form-text">Link to a cooking video (YouTube, etc.)</div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="IsPublic" name="IsPublic" value="true" checked="@(Model.IsPublic)">
+                            <label class="form-check-label" for="IsPublic">Make Public</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-save me-1"></i>Update Recipe
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const button = this.querySelector('button[type="submit"]');
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating Recipe...';
+        
+        // Validate file size (client-side)
+        const fileInput = document.getElementById('ImageFile');
+        if (fileInput.files.length > 0) {
+            const fileSize = fileInput.files[0].size / 1024 / 1024; // MB
+            if (fileSize > 5) {
+                alert('File size must be less than 5MB');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-save me-1"></i>Update Recipe';
+                e.preventDefault();
+            }
+        }
+    });
+
+    // Set selected option for difficulty
+    document.addEventListener('DOMContentLoaded', function() {
+        const difficultySelect = document.getElementById('Difficulty');
+        const currentDifficulty = '@Model.Difficulty';
+        if (currentDifficulty) {
+            for (let option of difficultySelect.options) {
+                if (option.value === currentDifficulty) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        }
+    });
+</script>

@@ -1,0 +1,144 @@
+@model TheKitchen.Models.Entities.Recipe
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Recipe Header -->
+            <div class="recipe-header mb-4">
+                <h1 class="text-brown">@Model.Title</h1>
+                <p class="lead text-muted">@Model.Description</p>
+                
+                <!-- Edit/Delete buttons for recipe owner -->
+                @if (User.Identity.IsAuthenticated && Model.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                {
+                    <div class="mb-4">
+                        <div class="btn-group">
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                <i class="fas fa-edit me-1"></i>Edit Recipe
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete \"@Model.Title\"? This action cannot be undone.')">
+                                    <i class="fas fa-trash me-1"></i>Delete Recipe
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-clock fa-2x text-brown mb-2"></i>
+                            <h5>@(Model.PrepTime + Model.CookTime) min</h5>
+                            <small class="text-muted">Total Time</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-users fa-2x text-brown mb-2"></i>
+                            <h5>@Model.Servings</h5>
+                            <small class="text-muted">Servings</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-fire fa-2x text-brown mb-2"></i>
+                            <h5>@Model.Difficulty</h5>
+                            <small class="text-muted">Difficulty</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <a asp-controller="ShoppingList" asp-action="Generate" asp-route-recipeId="@Model.Id" class="btn btn-warning">
+                                <i class="fas fa-shopping-cart me-1"></i>Shop
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="ingredient-list mb-4">
+                <h3 class="text-brown mb-3">
+                    <i class="fas fa-list-check me-2"></i>Ingredients
+                </h3>
+                <ul class="list-group">
+                    @foreach (var ingredient in Model.RecipeIngredients)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>@ingredient.Ingredient.Name</span>
+                            <span class="badge bg-brown rounded-pill">@ingredient.Quantity</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instruction-list">
+                <h3 class="text-brown mb-3">
+                    <i class="fas fa-book me-2"></i>Instructions
+                </h3>
+                <div class="card">
+                    <div class="card-body">
+                        <pre style="white-space: pre-wrap; font-family: inherit; border: none; background: none; padding: 0;">@Model.Instructions</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Recipe Image -->
+            <div class="card mb-4">
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img src="@Model.ImagePath" class="card-img-top" alt="@Model.Title" style="height: 300px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <i class="fas fa-utensils fa-4x text-muted"></i>
+                    </div>
+                }
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header bg-brown text-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="ShoppingList" asp-action="Generate" asp-route-recipeId="@Model.Id" class="btn btn-warning">
+                            <i class="fas fa-shopping-cart me-1"></i>Create Shopping List
+                        </a>
+                        <a href="#" class="btn btn-outline-brown" onclick="window.print()">
+                            <i class="fas fa-print me-1"></i>Print Recipe
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Recipes
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video -->
+            @if (!string.IsNullOrEmpty(Model.VideoUrl))
+            {
+                <div class="card mt-4">
+                    <div class="card-header bg-brown text-white">
+                        <h5 class="mb-0">Video Tutorial</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="@Model.VideoUrl" target="_blank" class="btn btn-outline-danger w-100">
+                            <i class="fab fa-youtube me-1"></i>Watch Video
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+@model List<TheKitchen.Models.Entities.FridgeItem>
+@{
+    ViewData["Title"] = "My Fridge";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-brown">My Fridge</h1>
+            <p class="lead">Manage your ingredients and discover what you can cook</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-brown text-white">
+                    <h5 class="mb-0"><i class="fas fa-refrigerator me-2"></i>Current Ingredients</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <div class="row">
+                            @foreach (var item in Model)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="fridge-item">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">@item.Ingredient.Name</h6>
+                                                <small class="text-muted">Quantity: @item.Quantity</small>
+                                                <br>
+                                                <small class="text-muted">Added: @item.AddedDate.ToString("MMM dd, yyyy")</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger remove-fridge-item" data-id="@item.Id">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-refrigerator fa-3x text-muted mb-3"></i>
+                            <h5>Your fridge is empty!</h5>
+                            <p class="text-muted">Add some ingredients to get started.</p>
+                            <a asp-action="SetupFridge" class="btn btn-primary">Add Ingredients</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-utensils fa-2x text-brown mb-3"></i>
+                    <h5>Cook Now</h5>
+                    <p class="text-muted">See what you can make with available ingredients</p>
+                    <a asp-action="CookNow" class="btn btn-warning w-100">Find Recipes</a>
+                </div>
+            </div>
+
+            <!-- Add Ingredients -->
+            <div class="card">
+                <div class="card-body">
+                    <h5>Add Ingredients</h5>
+                    <form id="addIngredientForm">
+                        <div class="mb-3">
+                            <label class="form-label">Ingredient</label>
+                            <select class="form-select" id="ingredientSelect" required>
+                                <option value="">Select ingredient...</option>
+                                <option value="1">Flour</option>
+                                <option value="2">Sugar</option>
+                                <option value="3">Eggs</option>
+                                <option value="4">Milk</option>
+                                <option value="5">Tomatoes</option>
+                                <option value="6">Onions</option>
+                                <option value="7">Garlic</option>
+                                <option value="8">Chicken</option>
+                                <option value="9">Rice</option>
+                                <option value="10">Olive Oil</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="text" class="form-control" id="quantityInput" placeholder="e.g., 2 cups, 500g" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add to Fridge</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add ingredient form
+        document.getElementById('addIngredientForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const ingredientId = document.getElementById('ingredientSelect').value;
+            const quantity = document.getElementById('quantityInput').value;
+            
+            if (!ingredientId || !quantity) {
+                alert('Please select an ingredient and enter a quantity');
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("AddToFridge", "Fridge")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ingredientId: parseInt(ingredientId),
+                        quantity: quantity
+                    })
+                });
+                
+                if (response.ok) {
+                    // Clear form and reload page
+                    document.getElementById('ingredientSelect').value = '';
+                    document.getElementById('quantityInput').value = '';
+                    location.reload();
+                } else {
+                    alert('Error adding ingredient. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error adding ingredient. Please try again.');
+            }
+        });
+
+        // Remove ingredient
+        document.querySelectorAll('.remove-fridge-item').forEach(button => {
+            button.addEventListener('click', async function() {
+                const itemId = this.getAttribute('data-id');
+                
+                if (confirm('Are you sure you want to remove this item from your fridge?')) {
+                    try {
+                        const response = await fetch('@Url.Action("RemoveFromFridge", "Fridge")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                fridgeItemId: parseInt(itemId)
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Error removing ingredient. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error removing ingredient. Please try again.');
+                    }
+                }
+            });
+        });
+    </script>
+}

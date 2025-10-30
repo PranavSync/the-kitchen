@@ -1,0 +1,61 @@
+@model List<TheKitchen.Models.Entities.Recipe>
+@{
+    ViewData["Title"] = "Cook Now - Recipes You Can Make";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-brown">Cook Now</h1>
+            <p class="lead">Recipes you can make with ingredients in your fridge</p>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var recipe in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card recipe-card h-100">
+                        <img src="@(recipe.ImagePath ?? "/images/placeholder-recipe.jpg")" class="card-img-top" alt="@recipe.Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@recipe.Title</h5>
+                            <p class="card-text text-muted">@recipe.Description</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>@(recipe.PrepTime + recipe.CookTime) min
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-users me-1"></i>@recipe.Servings servings
+                                </small>
+                            </div>
+                            <span class="badge recipe-badge">@recipe.Difficulty</span>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a asp-controller="Recipe" asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-primary btn-sm w-100">
+                                View Recipe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-refrigerator fa-4x text-muted mb-4"></i>
+            <h3>No Recipes Found</h3>
+            <p class="text-muted mb-4">We couldn't find any recipes you can make with your current ingredients.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a asp-controller="Fridge" asp-action="Index" class="btn btn-primary me-md-2">
+                    <i class="fas fa-refrigerator me-1"></i>Manage Fridge
+                </a>
+                <a asp-controller="Recipe" asp-action="Index" class="btn btn-outline-brown">
+                    <i class="fas fa-book me-1"></i>Browse All Recipes
+                </a>
+            </div>
+        </div>
+    }
+</div>

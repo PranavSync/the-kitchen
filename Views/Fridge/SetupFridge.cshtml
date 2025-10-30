@@ -1,0 +1,165 @@
+@{
+    ViewData["Title"] = "Setup Your Fridge";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-brown text-white text-center">
+                    <h3 class="mb-0"><i class="fas fa-refrigerator me-2"></i>Setup Your Fridge</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-utensils fa-3x text-brown mb-3"></i>
+                        <h4>Welcome to The Kitchen! 🎉</h4>
+                        <p class="text-muted">Let's set up your virtual fridge with at least 3 ingredients you have at home. This will help us suggest recipes you can make right now!</p>
+                    </div>
+
+                    <form id="setupFridgeForm">
+                        <div id="ingredientFields">
+                            <!-- Dynamic fields will be added here -->
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="button" id="addIngredientBtn" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-plus me-1"></i>Add Another Ingredient
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i>Finish Setup
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let ingredientCount = 0;
+        const commonIngredients = [
+            { id: 1, name: "Flour" },
+            { id: 2, name: "Sugar" },
+            { id: 3, name: "Eggs" },
+            { id: 4, name: "Milk" },
+            { id: 5, name: "Tomatoes" },
+            { id: 6, name: "Onions" },
+            { id: 7, name: "Garlic" },
+            { id: 8, name: "Chicken" },
+            { id: 9, name: "Rice" },
+            { id: 10, name: "Olive Oil" }
+        ];
+
+        function addIngredientField() {
+            if (ingredientCount >= 10) {
+                alert('Maximum 10 ingredients allowed for setup');
+                return;
+            }
+
+            const fieldId = `ingredient_${ingredientCount}`;
+            const fieldHtml = `
+                <div class="row mb-3" id="${fieldId}">
+                    <div class="col-md-6">
+                        <label class="form-label">Ingredient</label>
+                        <select class="form-select ingredient-select" name="ingredientIds" required>
+                            <option value="">Select an ingredient...</option>
+                            ${commonIngredients.map(ing => 
+                                `<option value="${ing.id}">${ing.name}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Quantity</label>
+                        <input type="text" class="form-control" name="quantities" placeholder="e.g., 2 cups" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="button" class="btn btn-outline-danger w-100 remove-btn" onclick="removeField('${fieldId}')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('ingredientFields').insertAdjacentHTML('beforeend', fieldHtml);
+            ingredientCount++;
+        }
+
+        function removeField(fieldId) {
+            if (ingredientCount <= 3) {
+                alert('Please keep at least 3 ingredients for setup');
+                return;
+            }
+            document.getElementById(fieldId).remove();
+            ingredientCount--;
+        }
+
+        // Add initial 3 fields
+        for (let i = 0; i < 3; i++) {
+            addIngredientField();
+        }
+
+        document.getElementById('addIngredientBtn').addEventListener('click', addIngredientField);
+
+        document.getElementById('setupFridgeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const ingredientSelects = document.querySelectorAll('.ingredient-select');
+            const quantityInputs = document.querySelectorAll('input[name="quantities"]');
+            
+            const ingredients = [];
+            let isValid = true;
+
+            // Validate all fields
+            ingredientSelects.forEach((select, index) => {
+                if (!select.value || !quantityInputs[index].value) {
+                    isValid = false;
+                    select.classList.add('is-invalid');
+                    quantityInputs[index].classList.add('is-invalid');
+                } else {
+                    select.classList.remove('is-invalid');
+                    quantityInputs[index].classList.remove('is-invalid');
+                    ingredients.push({
+                        ingredientId: parseInt(select.value),
+                        quantity: quantityInputs[index].value
+                    });
+                }
+            });
+
+            if (!isValid) {
+                alert('Please fill in all ingredient fields');
+                return;
+            }
+
+            if (ingredients.length < 3) {
+                alert('Please add at least 3 ingredients');
+                return;
+            }
+
+            // Add ingredients to fridge
+            try {
+                for (const ingredient of ingredients) {
+                    const response = await fetch('@Url.Action("AddToFridge", "Fridge")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(ingredient)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to add ingredient');
+                    }
+                }
+                
+                // Redirect to home page
+                window.location.href = '@Url.Action("Index", "Home")';
+                
+            } catch (error) {
+                alert('Error setting up fridge. Please try again.');
+            }
+        });
+    </script>
+}

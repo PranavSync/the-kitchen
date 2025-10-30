@@ -1,0 +1,126 @@
+﻿@model List<TheKitchen.Models.Entities.Recipe>
+@{
+    ViewData["Title"] = "Welcome to The Kitchen";
+}
+
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Welcome to The Kitchen</h1>
+        <p class="lead mb-4">Discover recipes you can make with what's in your fridge, or plan your next culinary adventure!</p>
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-4">
+                <a asp-controller="Fridge" asp-action="CookNow" class="btn btn-warning btn-lg w-100">
+                    <i class="fas fa-utensils me-2"></i>Cook Now
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a asp-controller="Recipe" asp-action="Index" class="btn btn-outline-light btn-lg w-100">
+                    <i class="fas fa-book me-2"></i>Browse Recipes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Featured Recipes -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-brown mb-4">Featured Recipes</h2>
+        </div>
+        @if (Model.Any())
+        {
+            @foreach (var recipe in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card recipe-card h-100">
+                        @if (!string.IsNullOrEmpty(recipe.ImagePath))
+                        {
+                            <img src="@recipe.ImagePath" class="card-img-top" alt="@recipe.Title" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-utensils fa-3x text-muted"></i>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@recipe.Title</h5>
+                            <p class="card-text text-muted">@recipe.Description</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>@(recipe.PrepTime + recipe.CookTime) min
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-users me-1"></i>@recipe.Servings servings
+                                </small>
+                            </div>
+                            <span class="badge recipe-badge">@recipe.Difficulty</span>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a asp-controller="Recipe" asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-primary btn-sm w-100">
+                                View Recipe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <h4>No featured recipes yet!</h4>
+                    <p>Be the first to share your amazing recipes with the community.</p>
+                    <a asp-controller="Recipe" asp-action="Create" class="btn btn-primary">Share Your Recipe</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-refrigerator fa-3x text-brown mb-3"></i>
+                    <h5 class="card-title">My Fridge</h5>
+                    <p class="card-text">Manage your ingredients and see what you can cook right now.</p>
+                    <a asp-controller="Fridge" asp-action="Index" class="btn btn-outline-brown">Manage Fridge</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-list-alt fa-3x text-brown mb-3"></i>
+                    <h5 class="card-title">Shopping Lists</h5>
+                    <p class="card-text">Create and merge shopping lists for your next grocery trip.</p>
+                    <a asp-controller="ShoppingList" asp-action="Index" class="btn btn-outline-brown">View Lists</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-share-alt fa-3x text-brown mb-3"></i>
+                    <h5 class="card-title">Share Recipes</h5>
+                    <p class="card-text">Share your family recipes with the community.</p>
+                    <a asp-controller="Recipe" asp-action="Create" class="btn btn-outline-brown">Share Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-outline-brown {
+        border-color: var(--warm-brown);
+        color: var(--warm-brown);
+    }
+    
+    .btn-outline-brown:hover {
+        background-color: var(--warm-brown);
+        color: white;
+    }
+</style>
