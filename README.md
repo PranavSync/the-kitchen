@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # The Kitchen - Recipe Management System
 
 ## Project Description
@@ -31,3 +32,7 @@ The Kitchen is a comprehensive recipe management web application built with ASP.
    ```bash
    git clone https://github.com/yourusername/the-kitchen.git
    cd the-kitchen
+=======
+# the-kitchen
+ASP.NET Core Recipe Management System
+>>>>>>> de9535a913f9452dd8d194cef7ac471a663755c7
