@@ -24,25 +24,24 @@ Imagine having a smart cookbook that not only stores your favorite recipes but a
 ## 🖼️ See It In Action
 
 ### Homepage - Your Cooking Dashboard
-![Homepage](https://via.placeholder.com/600x400/FFF8DC/8B4513?text=Homepage+with+Featured+Recipes)
+![Homepage](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/homepage.png)
 *Welcome to your kitchen! Browse featured recipes and quick actions.*
 
 ### Recipe Collection
-![Recipes Page](https://via.placeholder.com/600x400/FFF8DC/8B4513?text=Browse+All+Recipes)
+![Recipes Page](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/recipes-page.png)
 *Discover new recipes from our community collection*
 
 ### Recipe Details
-![Recipe Details](https://via.placeholder.com/600x400/FFF8DC/8B4513?text=Recipe+Details+with+Ingredients)
+![Recipe Details](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/recipe-details.png)
 *View complete recipe instructions and ingredients*
 
 ### My Fridge - Smart Ingredient Tracking
-![My Fridge](https://via.placeholder.com/600x400/FFF8DC/8B4513?text=My+Fridge+-+Track+Ingredients)
+![My Fridge](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/my-fridge.png)
 *See what ingredients you have and find matching recipes*
 
 ### Create Beautiful Recipes
-![Create Recipe](https://via.placeholder.com/600x400/FFF8DC/8B4513?text=Create+New+Recipe+Form)
+![Create Recipe](https://github.com/PranavSync/the-kitchen/raw/main/wwwroot/images/webimages/create-recipe.png)
 *Share your culinary creations with the community*
-
 ---
 
 ## 🚀 Getting Started - Let's Cook!
